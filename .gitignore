@@ -1,4 +1,5 @@
 # Ignore Python virtual environment files
 venv/
-.env/
+.env
 __pycache__/
+trial.py

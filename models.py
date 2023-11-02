@@ -1,37 +1,68 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 from app import app
 
 db = SQLAlchemy(app)
 # db.init_app(app)
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'User'
-    user_id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(32), unique = True, nullable=False)
-    password = db.Column(db.String(120), nullable = False)
+    passhash = db.Column(db.String(512), nullable = False)
     name = db.Column(db.String(32), nullable=True)
-    user_type = db.Column(db.String(26), nullable = False, default='General User')
+    email = db.Column(db.String(120), unique =True, nullable = False)
+    role = db.Column(db.String(26), nullable = False, default='User')
+    status = db.Column(db.String(16), nullable=False, default="white")
+
+    def generate_password(self, password):
+        self.passhash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return self.passhash==check_password_hash(self.passhash, password)
+
 
 class Songs(db.Model):
     __tablename__ = 'Songs'
-    song_id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(120), nullable=False)
-    singer = db.Column(db.String(32))
+    artist = db.Column(db.String(32))
     # views = db.Column(db.Integer)
     rel_date = db.Column(db.Date, nullable=False)
+    album_id = db.Column(db.Integer, db.ForeignKey('Album.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable = False)
 
-class Category(db.Model):
-    __tablename__='Category'
+
+class Album(db.Model):
+    __tablename__='Album'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    year = db.Column(db.String(4), nullable = False)
 
-    playlist = db.Relationship('Songs', backref='Playlist', lazy=True)
+    # playlist = db.Relationship('Songs', backref='Playlist', lazy=True)
+
+class lyrics(db.Model):
+    __tablename__='lyrics'
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(1024), nullable = False)
+    song_id = db.Column(db.Integer, db.ForeignKey('Songs.id'), nullable = False)
+
+playlist_songs = db.Table('playlist_songs',
+                db.Column('playlist_id', db.Integer, db.ForeignKey('Playlist.id')),
+                db.Column('song_id', db.Integer, db.ForeignKey('Songs.id')))
 
 class Playlist(db.Model):
+    __tablename__='Playlist'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_id'), nullable=False)
-    song_id = db.Column(db.Integer, db.ForeignKey('song_id'), nullable=False)
+    owner = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    songs = db.Relationship('Songs', secondary="playlist_songs", backref='Playlist') # lazy = True
 
 
+# @login.user_loader
+# def load_user(id):
+#     return User.query.get(int(id))
+with app.app_context():
+    db.create_all()
 
 
