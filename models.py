@@ -14,13 +14,19 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(32), nullable=True)
     email = db.Column(db.String(120), unique =True, nullable = False)
     role = db.Column(db.String(26), nullable = False, default='User')
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
     status = db.Column(db.String(16), nullable=False, default="white")
 
-    def generate_password(self, password):
+    @property
+    def password(self):
+        raise AttributeError("Password is not a readable attribute")
+
+    @password.setter
+    def password(self, password):
         self.passhash = generate_password_hash(password)
 
     def check_password(self, password):
-        return self.passhash==check_password_hash(self.passhash, password)
+        return check_password_hash(self.passhash, password)
 
 
 class Songs(db.Model):
@@ -64,5 +70,10 @@ class Playlist(db.Model):
 #     return User.query.get(int(id))
 with app.app_context():
     db.create_all()
+    admin = User.query.filter_by(is_admin=True).first()
+    if not admin:
+        admin = User(username="admin", name = "admin", password="admin133", email="admin@musicly.in", role="admin", is_admin=True)
+        db.session.add(admin)
+        db.session.commit()
 
 
