@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}
+    Musicly- Admin Dashboard
+{% endblock title %}
+{% block content %}
+    <h1>Admins Dashboard</h1>
+    <div class="heading">
+        <h2 class="text-muted">Albums</h2>
+        <a class="btn btn-success" href="url_for('add_album')">
+            <i class="fas fa-plus fa-xs"></i>Add</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Album ID</th>
+                <th>Album Name</th>
+                <th>Year of Launch</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for creator in creators %}
+                <tr>
+                    <td>{{creator.id}}</td>
+                    <td>{{creator.name}}</td>
+                    <td>{{creator.email}}</td>
+                    <td>
+                        <a href="{{url_for('warn_creator', id = creator.id)}}" class="btn btn-primary">
+                        <i class="fas fa-trash fa-xs"></i>
+                        Warn Creator
+                    </a>
+                        <a href="{{url_for('remove_creator', id = creator.id)}}" class="btn btn-primary">
+                        <i class="fas fa-trash fa-xs"></i>
+                        Remove Creator
+                    </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
+
+{% block style %}
+    <style>
+        .heading{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1, h2{
+            text-align: center;
+        }
+    </style>
+{% endblock style %}

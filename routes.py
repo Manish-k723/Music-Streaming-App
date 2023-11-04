@@ -16,7 +16,11 @@ def auth_required(func):
 @app.route('/')
 @auth_required
 def index():
-    return render_template('index.html', user = User.query.get(session["user_id"]))
+    user = User.query.get(session["user_id"])
+    if user.is_admin:
+        return redirect(url_for('admin'))
+    else:
+        return render_template('index.html', user = User.query.get(session["user_id"]))
 
 @app.route('/profile')
 @auth_required
@@ -48,6 +52,14 @@ def profile_post():
     db.session.commit()
     flash("Profile Update successfully")
     return redirect(url_for('profile'))
+@app.route('/admin')
+@auth_required
+def admin():
+    user = User.query.get(session["user_id"])
+    if not user.is_admin:
+        flash("You are not authorized to view this page")
+        return redirect(url_for('login'))
+    return render_template("admin.html")
 
 @app.route('/login')
 def login():
@@ -73,6 +85,7 @@ def login_post():
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
+    return redirect(url_for("login"))
     
 @app.route('/register')
 def register():
@@ -101,3 +114,17 @@ def register_post():
     flash("User added Succesfully")
     return redirect(url_for("login"))
 
+@app.route('/playlist')
+@auth_required
+def playlist():
+    return "This is a playlist"
+
+@app.route('/album/<int:creator_id>/warn')
+@auth_required
+def warn_creator(creator_id):
+    return "Edit"
+
+@app.route('/album/<int:creator_id>/remove')
+@auth_required
+def remove_creator(creator_id):
+    return "Delete"
