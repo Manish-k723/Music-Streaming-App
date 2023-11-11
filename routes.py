@@ -18,6 +18,7 @@ def auth_required(func):
 def index():
     user = User.query.get(session["user_id"])
     if user.is_admin:
+        flash("You are an admin, continue as admin")
         return redirect(url_for('admin'))
     else:
         return render_template('index.html', user = User.query.get(session["user_id"]))
@@ -52,13 +53,29 @@ def profile_post():
     db.session.commit()
     flash("Profile Update successfully")
     return redirect(url_for('profile'))
+
 @app.route('/admin')
-@auth_required
 def admin():
-    user = User.query.get(session["user_id"])
+    return render_template("adminLogin.html")
+
+@app.route('/admin', methods=['POST'])
+def admin_post():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if username =="" or password =="":
+        flash("Username or Password cannot be empty.")
+        return redirect(url_for('admin'))
+    user = User.query.filter_by(username = username).first()
     if not user.is_admin:
         flash("You are not authorized to view this page")
         return redirect(url_for('login'))
+    if not user:
+        flash("User doesnot exist. Please register and try again.")
+        return redirect(url_for('admin'))
+    if not user.check_password(password):
+        flash("Incorrect Password")
+        return redirect(url_for('admin'))
+    session["user_id"] = user.id
     return render_template("admin.html")
 
 @app.route('/login')
@@ -86,7 +103,7 @@ def login_post():
 def logout():
     session.pop('user_id', None)
     return redirect(url_for("login"))
-    
+
 @app.route('/register')
 def register():
     return render_template('register.html')

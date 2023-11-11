@@ -64,11 +64,11 @@ class Playlist(db.Model):
     owner = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     songs = db.Relationship('Songs', secondary="playlist_songs", backref='Playlist') # lazy = True
 
-class Creators(db.Model):
-    __tablename__=='Creator'
-    # id = db.
-    total_songs = db.Column(db.Integer, nullable = False, default=0)
-    average_rating = db.Column(db.Integer, nullable = False, default=0)
+# class Creators(db.Model):
+#     __tablename__='Creator'
+#     # id = db.
+#     total_songs = db.Column(db.Integer, nullable = False, default=0)
+#     average_rating = db.Column(db.Integer, nullable = False, default=0)
     # id = 
 # @login.user_loader
 # def load_user(id):
