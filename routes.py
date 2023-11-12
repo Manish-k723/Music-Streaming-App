@@ -35,7 +35,6 @@ def profile_post():
     name = request.form.get("name")
     email = request.form.get("email")
     password = request.form.get("password")
-    role = request.form.get("role")
     cpassword = request.form.get("cpassword")
     print(username, name, email, password, role, cpassword)
     if username =="" or password =="" or cpassword=="":
@@ -44,9 +43,9 @@ def profile_post():
     if not check_password(cpassword):
         flash("Incorrect Password, Try again.")
         return redirect(url_for('profile'))
-    if len(password)<7:
-        flash("Password Strength is low")
-        return redirect(url_for('profile'))
+    # if len(password)<7:
+    #     flash("Password Strength is low")
+    #     return redirect(url_for('profile'))
     if user.query.filter_by(username =username).first() and username !=user.username:
         flash("User with same username already exist, try with newer one")
     user.username, user.name, user.email, user.password = username, name, email, password
@@ -67,7 +66,7 @@ def admin_post():
         return redirect(url_for('admin'))
     user = User.query.filter_by(username = username).first()
     if not user.is_admin:
-        flash("You are not authorized to view this page")
+        flash("You are not authorized to view this page, please login to continue")
         return redirect(url_for('login'))
     if not user:
         flash("User doesnot exist. Please register and try again.")
@@ -114,8 +113,7 @@ def register_post():
     name = request.form.get("name")
     email = request.form.get("email")
     password = request.form.get("password")
-    role = request.form.get("role")
-    print(username, name, email, password, role)
+    print(username, name, email, password)
     if username =="" or password =="":
         flash("Username or Password cannot be empty.")
         return redirect(url_for('register'))
@@ -125,16 +123,45 @@ def register_post():
     if User.query.filter_by(username = username).first():
         flash("This username is already in use. Please choose another")
         return redirect(url_for('register'))
-    user = User(username=username, name = name, email=email, password=password, role=role)
+    user = User(username=username, name = name, email=email, password=password)
     db.session.add(user)
     db.session.commit()
     flash("User added Succesfully")
     return redirect(url_for("login"))
 
+@app.route('/registerAsCreator')
+def registerCreator():
+    return render_template("registerCreator.html")
+    
+
+@app.route('/registerAsCreator', methods=["POST"])
+def registerCreator_post():
+    username =request.form.get("username")
+    password = request.form.get("password")
+    confirmPassword = request.form.get("confirmPassword")
+    if username=="" or password=="" or confirmPassword=="":
+        flash("Kindly fill all the details")
+        return redirect(url_for('registerCreator'))
+    user = User.query.filter_by(username = username).first()
+    if password!=confirmPassword:
+        flash("Password should be same")
+        return redirect(url_for('registerCreator'))
+    if not user:
+        flash("User doesnot exist. Please register and try again.")
+        return redirect(url_for('registerCreator'))
+    if not user.check_password(password):
+        flash("Incorrect Password")
+        return redirect(url_for('registerCreator'))
+    user.role = "creator"
+    db.session.commit()
+    flash("Registered as Creator")
+    return redirect(url_for('index'))
+
+
 @app.route('/playlist')
 @auth_required
 def playlist():
-    return "This is a playlist"
+    return "Welcome to my Music Application"
 
 @app.route('/album/<int:creator_id>/warn')
 @auth_required

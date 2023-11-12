@@ -8,18 +8,18 @@
             {% if user %}
             <ul class="navbar-nav navbar navbar-expand-lg navbar-light bg-light">
               <li class="nav-item">
-                <a href="{{url_for('profile')}}" class="nav-link">Profile</a>
+                <a href="{{url_for('profile')}}" class="nav-link btn btn-outline-warning">Profile</a>
               </li>
               <li class="nav-item">
-                <a href="{{url_for('playlist')}}" class="nav-link">My Playlist</a>
+                <a href="{{url_for('playlist')}}" class="nav-link btn btn-outline-warning">My Playlist</a>
               </li>
               {% if user.role == "creator" %}
               <li class="nav-item">
-                <a href="{{url_for('playlist')}}" class="nav-link">Creator Account</a>
+                <a href="{{url_for('playlist')}}" class="nav-link btn btn-outline-warning">Go to your creator Account</a>
               </li>
               {% else %}
               <li class="nav-item">
-                <a href="{{url_for('playlist')}}" class="nav-link">Register as Creator</a>
+                <a href="{{url_for('registerCreator')}}" class="btn btn-outline-warning">Register as a Creator</a>
               </li>
               {% endif %}
             </ul>
@@ -27,13 +27,13 @@
             {% else %}
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" href="{{url_for('login')}}">Login</a>
+                <a class="nav-link btn btn-outline-danger" href="{{url_for('login')}}">Login</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="{{url_for('register')}}">Register</a>
+                <a class="nav-link btn btn-outline-danger" href="{{url_for('register')}}">Register</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="{{url_for('admin')}}">Admin Login</a>
+                <a class="nav-link btn btn-outline-danger" href="{{url_for('admin')}}">Admin Login</a>
               </li>
             </ul>
               {% endif %}
