@@ -47,7 +47,7 @@ def profile_post():
     #     flash("Password Strength is low")
     #     return redirect(url_for('profile'))
     if user.query.filter_by(username =username).first() and username !=user.username:
-        flash("User with same username already exist, try with newer one")
+        flash("User with same username already exist, try with other one")
     user.username, user.name, user.email, user.password = username, name, email, password
     db.session.commit()
     flash("Profile Update successfully")
@@ -75,14 +75,12 @@ def admin_post():
         flash("Incorrect Password")
         return redirect(url_for('admin'))
     session["user_id"] = user.id
-    return render_template("admin.html")
+    return render_template("admin.html")    
 
-@app.route('/login')
+@app.route('/login', methods=["GET",'POST'])
 def login():
-    return render_template('login.html')
-
-@app.route('/login', methods=['POST'])
-def login_post():
+    if request.method == "GET":
+        return render_template('login.html')
     username = request.form.get('username')
     password = request.form.get('password')
     if username =="" or password =="":
