@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly-UpdateAlbum
+{% endblock %} 
+
+{% block content %} 
+<div class="col-md-6">
+    <br>
+    <h3>Update Song details</h3>
+    <form method="POST">
+      <div class="form-group">
+        <label for="SongTitle">Song Title:</label>
+        <input type="text" class="form-control" id="SongTitle" name="SongTitle" value="{{SongTitle}}" required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="singerName">Singer Name:</label>
+        <input type="text" class="form-control" id="singerName" name="singerName" value = {{singerName}} required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="genre">Genre:</label>
+        <input type="text" class="form-control" id="genre" name="genre" value="{{songGenre}}" required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="lyrics">Lyrics:</label>
+        <input type="text" class="form-control" id="lyrics" name="lyrics" value="{{lyrics}}" required>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary">Update Album</button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block style %}
+<style>
+
+</style>
+{% endblock %}

@@ -3,45 +3,68 @@
     Musicly- Admin Dashboard
 {% endblock title %}
 {% block content %}
-    <h1>Admins Dashboard</h1>
-    <div class="heading">
-        <h2 class="text-muted">Albums</h2>
-        <a class="btn btn-success" href="url_for('add_album')">
-            <i class="fas fa-plus fa-xs"></i>Add</a>
+<div class="card-group cd">
+    <div class="card border-primary cdg">
+      <div class="card-body text-primary">
+        <h5 class="card-title">Normal Users count</h5>
+        <h2>{{normal_user_count}}</h2>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+      </div>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Creator ID</th>
-                <th>Creator Name</th>
-                <th>Creator Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for creator in creators %}
-                <tr>
-                    <td>{{creator.id}}</td>
-                    <td>{{creator.name}}</td>
-                    <td>{{creator.email}}</td>
-                    <td>
-                        <a href="{{url_for('warn_creator', id = creator.id)}}" class="btn btn-primary">
-                        <i class="fas fa-trash fa-xs"></i>
-                        Warn Creator
-                    </a>
-                        <a href="{{url_for('remove_creator', id = creator.id)}}" class="btn btn-primary">
-                        <i class="fas fa-trash fa-xs"></i>
-                        Remove Creator
-                    </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="card border-primary cdg">
+      <div class="card-body text-primary cdg">
+        <h5 class="card-title">Total Albums</h5>
+        <h2>{{total_albums}}</h2>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+      </div>
+    </div>
+
+    <div class="card border-primary cdg">
+      <div class="card-body text-primary">
+        <h5 class="card-title">Genres</h5>
+        <h2>{{genreCount}}</h2>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6 cdg">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Creators Count</h5>
+          <h2>{{creator_count}}</h2>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="{{url_for('manageCreators')}}" class="btn btn-primary">Manage Creators</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 cdg">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Songs</h5>
+          <h2>{{total_songs}}</h2>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="{{url_for('manageSongs')}}" class="btn btn-primary">Manage Songs</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 
 {% block style %}
     <style>
+        .cd {
+        margin-top: 45px;
+        margin-bottom: 45px;
+        }
+        .cdg{
+            padding: 15px;
+        }
         .heading{
             display: flex;
             justify-content: space-between;

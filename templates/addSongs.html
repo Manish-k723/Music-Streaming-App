@@ -1,0 +1,115 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly-Creator DashBoard
+{% endblock %} 
+
+{% block content %} 
+<div class="container mt-5">
+  <h2>{{ creator }}'s Dashboard</h2>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Songs</h5>
+          <h2>{{total_songs}}</h2>
+          <p class="card-text">Placeholder for total songs count</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Average Rating</h5>
+          <h2>{{ average_rating }}</h2>
+          <p class="card-text">Placeholder for average rating</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Albums</h5>
+          <h2>{{total_albums}}</h2>
+          <p class="card-text">Placeholder for total albums count</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5">
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h3>Add Song</h3>
+        <form method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="SongTitle">Song Title:</label>
+            <input type="text" class="form-control" id="SongTitle" name="SongTitle" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="SingerName">Singer Name:</label>
+            <input type="text" class="form-control" id="SingerName" name="SingerName" required>
+          </div>
+          <div class="form-group">
+            <label for="Genre">Genre:</label>
+            <input type="text" class="form-control" id="Genre" name="Genre" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="lyrics">Lyrics:</label>
+            <input type="text" class="form-control" accept = ".mp3" id="lyrics" name="lyrics" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="mp3File">Upload song:</label>
+            <input type="file" class="form-control-file" id="mp3File" name="mp3File" accept=".mp3" required>
+        </div>
+        <br>
+          <button type="submit" class="btn btn-primary">Add Song</button>
+        </form>
+      </div>
+  
+      <div class="col-md-6">
+        <h3>Songs List</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Song Title</th>
+              <th>Singer Name</th>
+              <th>Genre</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for song in songs %}
+            <tr>
+              <td>{{ song.name }}</td>
+              <td>{{ song.artist }}</td>
+              <td>{{ song.genre }}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/update">Update</a></button>
+                <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/delete">Delete</a></button>
+              </td>
+            </tr>
+            {% endfor %}
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block style %}
+<style>
+  a{
+    text-decoration: none;
+    color: black;
+  }
+</style>
+{% endblock %}

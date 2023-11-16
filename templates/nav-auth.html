@@ -6,37 +6,45 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
             {% if user %}
-            <ul class="navbar-nav navbar navbar-expand-lg navbar-light bg-light">
-              <li class="nav-item">
-                <a href="{{url_for('profile')}}" class="nav-link btn btn-outline-warning">Profile</a>
-              </li>
-              <li class="nav-item">
-                <a href="{{url_for('playlist')}}" class="nav-link btn btn-outline-warning">My Playlist</a>
-              </li>
-              {% if user.role == "creator" %}
-              <li class="nav-item">
-                <a href="{{url_for('playlist')}}" class="nav-link btn btn-outline-warning">Go to your creator Account</a>
-              </li>
+              {% if user.role=="admin" or need %}
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a href="{{url_for('logout')}}" class="btn btn-outline-warning bar">Logout</a>
+                </li>
+                </ul>
               {% else %}
-              <li class="nav-item">
-                <a href="{{url_for('registerCreator')}}" class="btn btn-outline-warning">Register as a Creator</a>
-              </li>
+                <ul class="navbar-nav navbar navbar-expand-lg navbar-light bg-light">
+                  <li class="nav-item">
+                    <a href="{{url_for('profile')}}" class="btn btn-outline-warning bar">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{url_for('playlist')}}" class="btn btn-outline-warning bar">My Playlist</a>
+                  </li>
+                  {% if user.role == "creator" %}
+                  <li class="nav-item ms-auto">
+                    <a href="{{url_for('creatorAccount')}}" class="btn btn-outline-warning bar">Go to your creator Account</a>
+                  </li>
+                  {% else %}
+                  <li class="nav-item ms-auto">
+                    <a href="{{url_for('registerCreator')}}" class="btn btn-outline-warning bar">Register as a Creator</a>
+                  </li>
+                </ul>
+                  {% endif %}
               {% endif %}
-            </ul>
 
             {% else %}
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link btn btn-outline-danger" href="{{url_for('login')}}">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link btn btn-outline-danger" href="{{url_for('register')}}">Register</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link btn btn-outline-danger" href="{{url_for('admin')}}">Admin Login</a>
-              </li>
-            </ul>
-              {% endif %}
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="btn btn-outline-danger bar" href="{{url_for('login')}}">Login</a>
+                </li>
+                <li class="nav-item">
+                  <a class="btn btn-outline-danger bar" href="{{url_for('register')}}">Register</a>
+                </li>
+                <li class="nav-item">
+                  <a class="btn btn-outline-danger bar" href="{{url_for('admin')}}">Admin Login</a>
+                </li>
+              </ul>
+            {% endif %}
             
       </div>
     </div>
@@ -47,5 +55,10 @@
   .navbar{
     width: 100%;
     padding: 0;
+  }
+
+  .bar{
+    /* margin-right: 10px; */
+    margin: 10px;
   }
 </style>

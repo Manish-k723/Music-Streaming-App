@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly-Login
+{% endblock %} 
+
+{% block content %} 
+<div class="container mt-5">
+    <h2>Song Management</h2>
+  
+    <table class="table mt-4">
+      <thead>
+        <tr>
+          <th>Song Title</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th>Rating</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Add rows dynamically based on your data -->
+        <tr>
+          <td>Song 1</td>
+          <td>Artist 1</td>
+          <td>Genre 1</td>
+          <td>5</td>
+          <td>
+            <form>
+              <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-flag"></i> Flag</button>
+              <button type="submit" class="btn btn-warning btn-sm"><i class="fas"></i> View Lyrics</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %} 

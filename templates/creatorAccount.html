@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly-Creator DashBoard
+{% endblock %} 
+
+{% block content %} 
+<div class="container mt-5">
+  <h2>{{ creator }}'s Dashboard</h2>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Songs</h5>
+          <h2>{{total_songs}}</h2>
+          <p class="card-text">Placeholder for total songs count</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Average Rating</h5>
+          <h2>{{average_rating}}</h2>
+          <p class="card-text">Placeholder for average rating</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Albums</h5>
+          <h2>{{total_albums}}</h2>
+          <p class="card-text">Placeholder for total albums count</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5">
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h3>Add Album</h3>
+        <form method="POST">
+          <div class="form-group">
+            <label for="albumTitle">Album Title:</label>
+            <input type="text" class="form-control" id="albumTitle" name="albumTitle" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="albumName">Artist Name:</label>
+            <input type="text" class="form-control" id="artistName" name="artistName" required>
+          </div>
+          <!-- <div class="form-group">
+            <label for="albumGenre">Album Genre:</label>
+            <input type="text" class="form-control" id="albumGenre" name="albumGenre" required>
+          </div> -->
+          <br>
+          <button type="submit" class="btn btn-primary">Add Album</button>
+        </form>
+      </div>
+  
+      <div class="col-md-6">
+        <h3>Albums List</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Album Title</th>
+              <th>Artist Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for album in albums %}
+            <tr>
+              <td>{{ album.name }}</td>
+              <td>{{ album.artist}}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i><a href="/creatorAccount/{{album.id}}/update">Update</a></button>
+                <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i><a href="/creatorAccount/{{album.id}}/delete">Delete</a></button>
+                <button type="button" class="btn btn-info btn-sm"><i class="fas fa-music"></i><a href="/creatorAccount/{{album.id}}/addSongs">Add Songs</a></button>
+              </td>
+            </tr>
+            {% endfor %}
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block style %}
+<style>
+  a{
+    text-decoration: none;
+    color: black;
+  }
+</style>
+{% endblock %}

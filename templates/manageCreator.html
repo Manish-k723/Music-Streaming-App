@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly-Manage Creators
+{% endblock %} 
+
+{% block content %} 
+<div class="container mt-5">
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h3>Whitelisted Creators</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Creator ID</th>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Songs</th>
+              <th>Rating</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows dynamically based on your data -->
+            <tr>
+                <td>1</td>
+                <td>Priyanka</td>
+                <td>Creator1</td>
+                <td>6</td>
+                <td>4</td>
+              <td>
+                <form>
+                  <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-ban"></i> Blacklist</button>
+                </form>
+              </td>
+            </tr>
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+  
+      <div class="col-md-6">
+        <h3>Blacklisted Creators</h3>
+        <table class="table">
+          <thead>
+            <tr>
+                <th>Creator ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Songs</th>
+                <th>Rating</th>
+                <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Add rows dynamically based on your data -->
+            <tr>
+              <td>1</td>
+              <td>Manish</td>
+              <td>Creator2</td>
+              <td>6</td>
+              <td>4</td>
+              <td>
+                <form>
+                  <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Whitelist</button>
+                </form>
+              </td>
+            </tr>
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %} 
