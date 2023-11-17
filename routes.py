@@ -10,29 +10,31 @@ def auth_required(func):
     @wraps(func)
     def inner(*args, **kwargs):
         if "user_id" not in session:
-            flash("You need to login first.")
+            flash("Login required.")
             return redirect(url_for("login"))
         return func(*args, **kwargs)
     return inner
 
 @app.route('/')
-@auth_required
 def index():
+    return redirect(url_for("login"))
+
+@app.route('/home')
+@auth_required
+def home():
     user = User.query.get(session["user_id"])
     if user.is_admin:
         flash("You are an admin, continue as admin")
         return redirect(url_for('admin'))
     else:
-        return render_template('index.html', user = User.query.get(session["user_id"]))
+        return render_template('home.html', user = User.query.get(session["user_id"]))
+    
 
-@app.route('/profile')
+@app.route('/profile', methods=["GET","POST"])
 @auth_required
 def profile():
-    return render_template("profile.html", user = User.query.get(session["user_id"]))
-
-@app.route('/profile', methods=["POST"])
-@auth_required
-def profile_post():
+    if request.method == "GET":
+        return render_template("profile.html", user = User.query.get(session["user_id"]))
     username =request.form.get("username")
     name = request.form.get("name")
     email = request.form.get("email")
@@ -54,13 +56,11 @@ def profile_post():
     db.session.commit()
     flash("Profile Update successfully")
     return redirect(url_for('profile'))
-
-@app.route('/admin')
+ 
+@app.route('/admin', methods=['GET','POST'])
 def admin():
-    return render_template("adminLogin.html")
-
-@app.route('/admin', methods=['POST'])
-def admin_post():
+    if request.method == "GET":
+        return render_template("adminLogin.html")
     username = request.form.get('username')
     password = request.form.get('password')
     if username =="" or password =="":
@@ -103,19 +103,17 @@ def login():
         flash("Incorrect Password")
         return redirect(url_for('login'))
     session["user_id"] = user.id
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     return redirect(url_for("login"))
 
-@app.route('/register')
+@app.route('/register', methods=['GET','POST'])
 def register():
-    return render_template('register.html')
-
-@app.route('/register', methods=['POST'])
-def register_post():
+    if request.method == "GET":
+        return render_template('register.html')
     username =request.form.get("username")
     name = request.form.get("name")
     email = request.form.get("email")
@@ -137,6 +135,7 @@ def register_post():
     return redirect(url_for("login"))
     
 @app.route('/registerAsCreator', methods=["POST", "GET"])
+@auth_required
 def registerCreator():
     if request.method == "GET":
         return render_template("registerCreator.html")
