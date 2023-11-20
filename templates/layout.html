@@ -29,16 +29,17 @@
 </head>
 <body>
     {% include 'nav-auth.html' %}
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %} 
-            {% for message in messages %}
-                <div class="alert alert-success alert-disissible fade show" role="alert">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
+
     <div class="container">
         {% block content %} {% endblock %} 
     </div>
