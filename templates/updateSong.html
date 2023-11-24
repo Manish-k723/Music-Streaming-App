@@ -26,16 +26,20 @@
       <br>
       <div class="form-group">
         <label for="lyrics">Lyrics:</label>
-        <input type="text" class="form-control" id="lyrics" name="lyrics" value="{{lyrics}}" required>
+        <textarea class="form-control" id="lyrics" name="lyrics" required>{{lyrics}}</textarea>
       </div>
       <br>
-      <button type="submit" class="btn btn-primary">Update Album</button>
+      <button type="submit" class="btn btn-outline-success">Update Song</button>
     </form>
   </div>
 {% endblock %}
 
 {% block style %}
 <style>
-
+  #lyrics {
+            width: 100%;
+            min-height: 10em; 
+            resize: none; 
+        }
 </style>
 {% endblock %}

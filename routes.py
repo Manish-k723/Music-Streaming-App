@@ -29,7 +29,6 @@ def home():
     else:
         return render_template('home.html', user = User.query.get(session["user_id"]))
     
-
 @app.route('/profile', methods=["GET","POST"])
 @auth_required
 def profile():
@@ -190,10 +189,19 @@ def updateAlbum(album_id):
 @app.route("/creatorAccount/<int:album_id>/delete")
 @auth_required
 def deleteAlbum(album_id):
-    remove_album = db.session.query(Album).filter_by(id=album_id).first()
-    db.session.delete(remove_album)
-    db.session.commit()
-    flash("Album added Succesfully", "success")
+    songs_in_album = db.session.query(Songs).filter_by(album_id=album_id).first()
+    if songs_in_album:
+        flash("Cannot delete album. Remove all songs from the album first.", "danger")
+    else:
+        remove_album = db.session.query(Album).filter_by(id=album_id).first()
+
+        if remove_album:
+            db.session.delete(remove_album)
+            db.session.commit()
+            flash("Album deleted successfully", "success")
+        else:
+            flash("Album not found", "danger")
+
     return redirect(url_for("creatorAccount"))
 
 @app.route("/creatorAccount/<int:album_id>/addSongs", methods = ["GET", "POST"])
@@ -250,12 +258,48 @@ def deleteSong(album_id, song_id):
 @app.route('/admin/manageCreators')
 @auth_required
 def manageCreators():
-    return render_template("manageCreator.html", user = User.query.get(session["user_id"]), need = True)
+    creators = User.query.filter_by(role="creator").all()
+    creators_data = (
+        db.session.query(
+            User.id,
+            User.name,
+            User.username,
+            User.status,
+            db.func.count(db.func.distinct(Songs.id)).label('totalSongs'),
+            db.func.count(db.func.distinct(Album.id)).label('totalAlbums')
+        ).filter(User.role == 'creator').outerjoin(Songs, User.id == Songs.CreatorId).outerjoin(Album, User.id == Album.CreatorId).group_by(User.id, User.name, User.username).all()
+    )
+    return render_template("manageCreator.html", user = User.query.get(session["user_id"]), creators = creators_data,  need = True)
+
+@app.route("/admin/manageCreators/<int:creatorID>/<string:newStatus>")
+@auth_required
+def updateStatus(creatorID, newStatus):
+    creator = db.session.query(User).filter_by(id = creatorID).one()
+    creator.status = newStatus
+    db.session.commit()
+    return redirect(url_for('manageCreators'))
 
 @app.route('/admin/manageSongs')
 @auth_required
 def manageSongs():
-    return render_template("manageSongs.html", user = User.query.get(session["user_id"]), need = True)
+    songs = db.session.query(Songs).all()
+    return render_template("manageSongs.html", songs = songs, user = User.query.get(session["user_id"]), need = True)
+
+@app.route('/admin/manageSongs/<string:action>/<int:song_id>')
+@auth_required
+def flagSongs(song_id, action):
+    song = db.session.query(Songs).filter_by(id = song_id).one()
+    if action == "lyrics":
+        pass
+    elif action == "flag":
+        filename = song.filename
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        db.session.delete(song)
+        db.session.commit()
+        flash("Song removed", "success")
+    return redirect(url_for('manageSongs'))
 
 @app.route('/playlist')
 @auth_required

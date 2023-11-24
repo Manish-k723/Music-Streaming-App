@@ -61,7 +61,7 @@
           <br>
           <div class="form-group">
             <label for="lyrics">Lyrics:</label>
-            <input type="text" class="form-control" accept = ".mp3" id="lyrics" name="lyrics" required>
+            <textarea class="form-control" id="lyrics" name="lyrics" required></textarea>
           </div>
           <br>
           <div class="form-group">
@@ -81,6 +81,7 @@
               <th>Song Title</th>
               <th>Singer Name</th>
               <th>Genre</th>
+              <th>Ratings</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -90,13 +91,13 @@
               <td>{{ song.name }}</td>
               <td>{{ song.artist }}</td>
               <td>{{ song.genre }}</td>
+              <td>{{ song.rating }}</td>
               <td>
                 <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/update">Update</a></button>
                 <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/delete">Delete</a></button>
               </td>
             </tr>
             {% endfor %}
-            <!-- Add more rows as needed -->
           </tbody>
         </table>
       </div>
@@ -111,5 +112,10 @@
     text-decoration: none;
     color: black;
   }
+  #lyrics {
+            width: 100%;
+            min-height: 10em; 
+            resize: none; 
+        }
 </style>
 {% endblock %}

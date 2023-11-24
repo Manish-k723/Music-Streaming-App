@@ -11,6 +11,7 @@
     <table class="table mt-4">
       <thead>
         <tr>
+          <th>Song ID</th>
           <th>Song Title</th>
           <th>Artist</th>
           <th>Genre</th>
@@ -19,20 +20,31 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Add rows dynamically based on your data -->
+        {% for song in songs %}
         <tr>
-          <td>Song 1</td>
-          <td>Artist 1</td>
-          <td>Genre 1</td>
-          <td>5</td>
+          <td>{{song.id}}</td>
+          <td>{{song.name}}</td>
+          <td>{{song.artist}}</td>
+          <td>{{song.genre}}</td>
+          <td>{{song.rating}}</td>
           <td>
             <form>
-              <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-flag"></i> Flag</button>
-              <button type="submit" class="btn btn-warning btn-sm"><i class="fas"></i> View Lyrics</button>
+              <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-flag"></i><a href="manageSongs/{{'flag'}}/{{song.id}}"> Flag</a></button>
+              <button type="submit" class="btn btn-warning btn-sm"><i class="fas"></i><a href="manageSongs/{{'lyrics'}}/{{song.id}}"> View Lyrics</a></button>
             </form>
           </td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
 {% endblock %} 
+
+{% block style %}
+<style>
+a{
+  text-decoration: none;
+  color: white;
+}
+</style>
+{% endblock %}

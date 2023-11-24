@@ -4,30 +4,27 @@
 {% endblock title %}
 {% block content %}
 <div class="card-group cd">
-    <div class="card border-primary cdg">
-      <div class="card-body text-primary">
+    <div class="card border-info cdg">
+      <div class="card-body">
         <h5 class="card-title">Normal Users count</h5>
-        <h2>{{normal_user_count}}</h2>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        <h2 class="text-info">{{normal_user_count}}</h2>
+        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio sunt esse aspernatur. Repellat consequatur ducimus doloribus, sed laudantium nam eaque.</p>
       </div>
     </div>
 
-    <div class="card border-primary cdg">
-      <div class="card-body text-primary cdg">
+    <div class="card border-info cdg">
+      <div class="card-body ">
         <h5 class="card-title">Total Albums</h5>
-        <h2>{{total_albums}}</h2>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        <h2 class="text-info">{{total_albums}}</h2>
+        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque alias reiciendis eligendi minima maxime sit nulla est assumenda soluta in.</p>
       </div>
     </div>
 
-    <div class="card border-primary cdg">
-      <div class="card-body text-primary">
+    <div class="card border-info cdg">
+      <div class="card-body">
         <h5 class="card-title">Genres</h5>
-        <h2>{{genreCount}}</h2>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-        <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        <h2 class="text-info">{{genreCount}}</h2>
+        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fuga cum numquam soluta adipisci magni at dignissimos! Quis, porro in.</p>
       </div>
     </div>
   </div>
@@ -39,7 +36,7 @@
           <h5 class="card-title">Creators Count</h5>
           <h2>{{creator_count}}</h2>
           <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="{{url_for('manageCreators')}}" class="btn btn-primary">Manage Creators</a>
+          <a href="{{url_for('manageCreators')}}" class="btn btn-outline-primary">Manage Creators</a>
         </div>
       </div>
     </div>
@@ -49,7 +46,7 @@
           <h5 class="card-title">Total Songs</h5>
           <h2>{{total_songs}}</h2>
           <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="{{url_for('manageSongs')}}" class="btn btn-primary">Manage Songs</a>
+          <a href="{{url_for('manageSongs')}}" class="btn btn-outline-primary">Manage Songs</a>
         </div>
       </div>
     </div>

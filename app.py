@@ -5,5 +5,3 @@ app = Flask(__name__)
 import config
 import models
 import routes
-
-print("Succes means to me")

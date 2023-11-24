@@ -16,24 +16,27 @@
               <th>Name</th>
               <th>Username</th>
               <th>Songs</th>
-              <th>Rating</th>
+              <th>AlbumCount</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Add rows dynamically based on your data -->
+            {% for creator in creators %}
             <tr>
-                <td>1</td>
-                <td>Priyanka</td>
-                <td>Creator1</td>
-                <td>6</td>
-                <td>4</td>
-              <td>
-                <form>
-                  <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-ban"></i> Blacklist</button>
-                </form>
-              </td>
-            </tr>
+                {% if creator[3] == "white" %}  
+                  <td>{{ creator[0] }}</td>
+                  <td>{{ creator[1] }}</td>
+                  <td>{{ creator[2] }}</td>
+                  <td>{{ creator[4] }}</td>
+                  <td>{{ creator[5] }}</td>
+                  <td>
+                    <form>
+                      <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-ban"></i><a href="manageCreators/{{creator[0]}}/{{'black'}}"> Blacklist</a></button>
+                    </form>
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
             <!-- Add more rows as needed -->
           </tbody>
         </table>
@@ -48,28 +51,39 @@
                 <th>Name</th>
                 <th>Username</th>
                 <th>Songs</th>
-                <th>Rating</th>
+                <th>AlbumCount</th>
                 <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Add rows dynamically based on your data -->
+            {% for creator in creators %}
             <tr>
-              <td>1</td>
-              <td>Manish</td>
-              <td>Creator2</td>
-              <td>6</td>
-              <td>4</td>
-              <td>
-                <form>
-                  <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Whitelist</button>
-                </form>
-              </td>
+              {% if creator[3] == "black" %}
+                <td>{{ creator[0] }}</td>
+                <td>{{ creator[1] }}</td>
+                <td>{{ creator[2] }}</td>
+                <td>{{ creator[4] }}</td>
+                <td>{{ creator[5] }}</td>
+                <td>
+                  <form>
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i><a href="manageCreators/{{creator[0]}}/{{'white'}}"> Whitelist</a></button>
+                  </form>
+                </td>
+              {% endif %}
             </tr>
-            <!-- Add more rows as needed -->
+            {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
   </div>
 {% endblock %} 
+
+{% block style %}
+<style>
+a{
+  text-decoration: none;
+  color: white;
+}
+</style>
+{% endblock %}
