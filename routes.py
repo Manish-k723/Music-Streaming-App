@@ -19,42 +19,6 @@ def auth_required(func):
 def index():
     return redirect(url_for("login"))
 
-@app.route('/home')
-@auth_required
-def home():
-    user = User.query.get(session["user_id"])
-    if user.is_admin:
-        flash("You are an admin, continue as admin", "info")
-        return redirect(url_for('admin'))
-    else:
-        return render_template('home.html', user = User.query.get(session["user_id"]))
-    
-@app.route('/profile', methods=["GET","POST"])
-@auth_required
-def profile():
-    if request.method == "GET":
-        return render_template("profile.html", user = User.query.get(session["user_id"]))
-    username =request.form.get("username")
-    name = request.form.get("name")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    cpassword = request.form.get("cpassword")
-    if username =="" or password =="" or cpassword=="":
-        flash("Username or Password cannot be empty.", "danger")
-        return redirect(url_for('profile'))
-    if not check_password(cpassword):
-        flash("Incorrect Password, Try again.", "danger")
-        return redirect(url_for('profile'))
-    if len(password)<7:
-        flash("Password Strength is low", "danger")
-        return redirect(url_for('profile'))
-    if user.query.filter_by(username =username).first() and username !=user.username:
-        flash("User with same username already exist, try with other one", "danger")
-    user.username, user.name, user.email, user.password = username, name, email, password
-    db.session.commit()
-    flash("Profile Update successfully", "success")
-    return redirect(url_for('profile'))
- 
 @app.route('/admin', methods=['GET','POST'])
 def admin():
     if request.method == "GET":
@@ -74,15 +38,8 @@ def admin():
     if not user.check_password(password):
         flash("Incorrect Password", "danger")
         return redirect(url_for('admin'))
-    session["user_id"] = user.id
-    total_songs =  Songs.query.count()
-    total_albums =  Album.query.count()
-    normal_user_count = User.query.filter_by(role = 'User').count()
-    creator_count = User.query.filter_by(role = 'creator').count()
-    unique_genres = db.session.query(Songs.genre).distinct().all()
-    unique_genres_list = [genre[0] for genre in unique_genres]
-    genreCount = len(unique_genres_list)
-    return render_template("admin.html", total_songs = total_songs, normal_user_count = normal_user_count, creator_count = creator_count, genreCount= genreCount, total_albums = total_albums, user = User.query.get(session["user_id"]))    
+    session["user_id"] = user.id  
+    return redirect(url_for("adminHome"))
 
 @app.route('/login', methods=["GET",'POST'])
 def login():
@@ -131,6 +88,54 @@ def register():
     db.session.commit()
     flash("User added Succesfully", "success")
     return redirect(url_for("login"))
+
+@app.route('/home')
+@auth_required
+def home():
+    user = User.query.get(session["user_id"])
+    if user.is_admin:
+        flash("You are an admin, continue as admin", "info")
+        return redirect(url_for('admin'))
+    else:
+        return render_template('home.html', user = User.query.get(session["user_id"]))
+    
+@app.route('/adminHome')
+@auth_required
+def adminHome():
+    total_songs =  Songs.query.count()
+    total_albums =  Album.query.count()
+    normal_user_count = User.query.filter_by(role = 'User').count()
+    creator_count = User.query.filter_by(role = 'creator').count()
+    unique_genres = db.session.query(Songs.genre).distinct().all()
+    unique_genres_list = [genre[0] for genre in unique_genres]
+    genreCount = len(unique_genres_list)
+    return render_template("admin.html", total_songs = total_songs, normal_user_count = normal_user_count, creator_count = creator_count, genreCount= genreCount, total_albums = total_albums, user = User.query.get(session["user_id"])) 
+
+@app.route('/profile', methods=["GET","POST"])
+@auth_required
+def profile():
+    if request.method == "GET":
+        return render_template("profile.html", user = User.query.get(session["user_id"]))
+    username =request.form.get("username")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    password = request.form.get("password")
+    cpassword = request.form.get("cpassword")
+    if username =="" or password =="" or cpassword=="":
+        flash("Username or Password cannot be empty.", "danger")
+        return redirect(url_for('profile'))
+    if not check_password(cpassword):
+        flash("Incorrect Password, Try again.", "danger")
+        return redirect(url_for('profile'))
+    if len(password)<7:
+        flash("Password Strength is low", "danger")
+        return redirect(url_for('profile'))
+    if user.query.filter_by(username =username).first() and username !=user.username:
+        flash("User with same username already exist, try with other one", "danger")
+    user.username, user.name, user.email, user.password = username, name, email, password
+    db.session.commit()
+    flash("Profile Update successfully", "success")
+    return redirect(url_for('profile'))
     
 @app.route('/registerAsCreator', methods=["POST", "GET"])
 @auth_required
@@ -255,7 +260,7 @@ def deleteSong(album_id, song_id):
     db.session.commit()
     return redirect(url_for("addSongs", album_id = album_id))
 
-@app.route('/admin/manageCreators')
+@app.route('/adminHome/manageCreators')
 @auth_required
 def manageCreators():
     creators = User.query.filter_by(role="creator").all()
@@ -271,7 +276,7 @@ def manageCreators():
     )
     return render_template("manageCreator.html", user = User.query.get(session["user_id"]), creators = creators_data,  need = True)
 
-@app.route("/admin/manageCreators/<int:creatorID>/<string:newStatus>")
+@app.route("/adminHome/manageCreators/<int:creatorID>/<string:newStatus>")
 @auth_required
 def updateStatus(creatorID, newStatus):
     creator = db.session.query(User).filter_by(id = creatorID).one()
@@ -279,18 +284,19 @@ def updateStatus(creatorID, newStatus):
     db.session.commit()
     return redirect(url_for('manageCreators'))
 
-@app.route('/admin/manageSongs')
+@app.route('/adminHome/manageSongs')
 @auth_required
 def manageSongs():
     songs = db.session.query(Songs).all()
     return render_template("manageSongs.html", songs = songs, user = User.query.get(session["user_id"]), need = True)
 
-@app.route('/admin/manageSongs/<string:action>/<int:song_id>')
+@app.route('/adminHome/manageSongs/<string:action>/<int:song_id>')
 @auth_required
-def flagSongs(song_id, action):
+def adminManageSongs(song_id, action):
     song = db.session.query(Songs).filter_by(id = song_id).one()
     if action == "lyrics":
-        pass
+        print(song.lyrics)
+        return render_template("lyrics.html", song=song)
     elif action == "flag":
         filename = song.filename
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
