@@ -17,7 +17,12 @@ def auth_required(func):
 
 @app.route('/')
 def index():
-    return redirect(url_for("login"))
+    try:
+        user = User.query.get(session["user_id"])
+        if user:
+            return redirect(url_for("home"))
+    except:
+        return redirect(url_for("login"))
 
 @app.route('/admin', methods=['GET','POST'])
 def admin():
@@ -97,7 +102,8 @@ def home():
         flash("You are an admin, continue as admin", "info")
         return redirect(url_for('admin'))
     else:
-        return render_template('home.html', user = User.query.get(session["user_id"]))
+        songs = Songs.query.order_by(Songs.rating.desc()).all()
+        return render_template('home.html', songs = songs, user = User.query.get(session["user_id"]))
     
 @app.route('/adminHome')
 @auth_required
@@ -306,6 +312,14 @@ def adminManageSongs(song_id, action):
         db.session.commit()
         flash("Song removed", "success")
     return redirect(url_for('manageSongs'))
+
+@app.route('/playSong/<int:song_id>')
+@auth_required
+def playSong(song_id):
+    song = db.session.query(Songs).filter_by(id = song_id).one()
+    filename = song.filename
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    return render_template("playSong.html", song = song, user = User.query.get(session['user_id']), path = file_path)
 
 @app.route('/playlist')
 @auth_required

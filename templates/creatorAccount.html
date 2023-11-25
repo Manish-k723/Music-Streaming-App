@@ -79,9 +79,9 @@
               <td>{{ album.name }}</td>
               <td>{{ album.artist}}</td>
               <td>
-                <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i><a href="/creatorAccount/{{album.id}}/update">Update</a></button>
-                <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i><a href="/creatorAccount/{{album.id}}/delete">Delete</a></button>
-                <button type="button" class="btn btn-info btn-sm"><i class="fas fa-music"></i><a href="/creatorAccount/{{album.id}}/addSongs">Manage Songs</a></button>
+                <button type="button" class="btn btn-warning btn-sm bt" onclick="window.location.href='/creatorAccount/{{album.id}}/update';"><i class="fas fa-edit"></i>Update</button>
+                <button type="button" class="btn btn-danger btn-sm bt" onclick="window.location.href='/creatorAccount/{{album.id}}/delete';"><i class="fas fa-trash-alt"></i>Delete</button>
+                <button type="button" class="btn btn-info btn-sm bt" onclick="window.location.href='/creatorAccount/{{album.id}}/addSongs';"><i class="fas fa-music"></i>Manage Album</button>
               </td>
             </tr>
             {% endfor %}
@@ -96,7 +96,7 @@
 
 {% block style %}
 <style>
-  a{
+  .bt{
     text-decoration: none;
     color: black;
   }
