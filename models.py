@@ -38,6 +38,7 @@ class Songs(db.Model):
     rating = db.Column(db.Integer, nullable = False, default=0)
     genre = db.Column(db.String(26), nullable=False)
     filename = db.Column(db.String(255), nullable=False)
+    imagepath = db.Column(db.String(255), nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('Album.id'), nullable = False)
     CreatorId = db.Column(db.Integer, db.ForeignKey('User.id'), nullable = False)
 
@@ -49,14 +50,6 @@ class Album(db.Model):
     artist = db.Column(db.String, nullable = False)
     CreatorId = db.Column(db.Integer, db.ForeignKey('User.id'), nullable = False)
 
-    # playlist = db.Relationship('Songs', backref='Playlist', lazy=True)
-
-# class lyrics(db.Model):
-#     __tablename__='lyrics'
-#     id = db.Column(db.Integer, primary_key=True)
-#     text = db.Column(db.String(1024), nullable = False)
-#     song_id = db.Column(db.Integer, db.ForeignKey('Songs.id'), nullable = False)
-
 playlist_songs = db.Table('playlist_songs',
                 db.Column('playlist_id', db.Integer, db.ForeignKey('Playlist.id')),
                 db.Column('song_id', db.Integer, db.ForeignKey('Songs.id')))
@@ -65,6 +58,7 @@ class Playlist(db.Model):
     __tablename__='Playlist'
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    playlist_name = db.Column(db.String(255), nullable=False)
     songs = db.Relationship('Songs', secondary="playlist_songs", backref='Playlist') # lazy = True
 
 with app.app_context():

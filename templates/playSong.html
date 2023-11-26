@@ -8,61 +8,94 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6">
-                <h1>{{song.name}}</h1>
-                <p>Artist: {{song.artist}}</p>
-                <p>Genre: {{song.genre}}</p>
-                <audio controls>
-                    
-                    <source src="{{path}}" type="audio/mp3">
-                    Your browser does not support the audio tag.
-                </audio>
-
-                <!-- Rating Form -->
-                <form id="ratingForm" action="/submit-rating" method="post">
-                    <div class="form-group">
-                        <label for="rating">Rate the song:</label>
-                        <div class="rating-stars">
-                            <i class="star" data-value="1">&#9733;</i>
-                            <i class="star" data-value="2">&#9733;</i>
-                            <i class="star" data-value="3">&#9733;</i>
-                            <i class="star" data-value="4">&#9733;</i>
-                            <i class="star" data-value="5">&#9733;</i>
-                            <input type="hidden" name="rating" id="ratingInput" value="0">
-                        </div>
+                <div class="song-info p-3">
+                    <img src="../static/images/dog.jpg" alt="Song Image" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    <h1>{{song.name}}</h1>
+                    <p>Artist: {{song.artist}}</p>
+                    <p>Rating: {{song.rating}}</p>
+                    <p>Genre: {{song.genre}}</p>
+                    <audio controls class="mb-2">
+                        <source src="{{ url_for('static', filename='audios/' + song.filename) }}" type="audio/mpeg">
+                        Your browser does not support the audio tag.
+                    </audio>
+                    <div class="container">
+                        <form action="/submit-rating/{{song.id}}" method="post">
+                            <div class="rating">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5"></label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4"></label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3"></label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2"></label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1"></label>
+                            </div>
+                            <button type="submit" class="btn btn-outline-warning mt-3 bt">Submit Rating</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit Rating</button>
-                </form>
+                </div>
             </div>
+            
             <div class="col-md-1 border-right"></div>
             <div class="col-md-5 pl-4">
-                <h3>Lyrics</h3>
-                <p>
-                    {{song.lyrics}}
-                </p>
-
-                <!-- Add more lyrics content here -->
+                <div class="lyrics-box p-3">
+                    <h3>Lyrics</h3>
+                    <hr>
+                    <p>{{ song.lyrics }}</p>
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block style %}
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 <style>
-    .rating-stars {
+    .rating {
+        display: inline-block;
+        font-size: 64px; /* Adjust the size of the stars */
         cursor: pointer;
+        line-height: 2;
     }
 
-    .rating-stars i {
-        font-size: 24px;
+    .bt{
+        margin-left: -204px;
+    }
+
+    .rating input {
+        display: none;
+    }
+
+    .rating label {
+        float: right;
         color: #ddd;
     }
 
-    .rating-stars i:hover,
-    .rating-stars i.active {
+    .rating label:before {
+        content: '\2605'; /* Unicode character for a star */
+    }
+
+    .rating input:checked ~ label {
         color: #ffc107;
     }
+    .song-info {
+        border: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .lyrics-box {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        height: 100%; /* Adjust the height as needed */
+    }
     p {
-            white-space: pre-line;  /* Preserve newline characters */
-        }
+        white-space: pre-line; 
+    }
 </style>
 {% endblock %}

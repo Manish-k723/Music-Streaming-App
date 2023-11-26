@@ -15,6 +15,28 @@ def auth_required(func):
         return func(*args, **kwargs)
     return inner
 
+def creator_auth_required(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        user = User.query.get(session.get("user_id"))
+        if user.role == "creator":
+            return func(*args, **kwargs)
+        else:
+            flash("Logged out! You are not a Creator.", "danger")
+            return redirect(url_for("logout"))
+    return inner
+
+def admin_auth_required(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        user = User.query.get(session.get("user_id"))
+        if user.role == "admin":
+            return func(*args, **kwargs)
+        else:
+            flash("Logged out ! You are not an Admin.", "danger")
+            return redirect(url_for("logout"))
+    return inner
+
 @app.route('/')
 def index():
     try:
@@ -107,7 +129,9 @@ def home():
     
 @app.route('/adminHome')
 @auth_required
+@admin_auth_required
 def adminHome():
+    user = User.query.get(session["user_id"])
     total_songs =  Songs.query.count()
     total_albums =  Album.query.count()
     normal_user_count = User.query.filter_by(role = 'User').count()
@@ -169,13 +193,16 @@ def registerCreator():
 @auth_required
 def creatorAccount():
     user = User.query.get(session["user_id"])
+    if user.role != "creator":
+        flash("Logged out ! You are not a Creator", "danger")
+        return redirect(url_for("logout"))
     current_creator = user.id
     if request.method == "GET":
         total_songs = db.session.query(func.count(Songs.id)).filter(Songs.CreatorId == current_creator).scalar()
         average_rating = db.session.query(func.avg(Songs.rating)).filter(Songs.CreatorId == current_creator).scalar()
         total_albums = db.session.query(func.count(Album.id)).filter(Album.CreatorId == current_creator).scalar()
         albums = Album.query.filter_by(CreatorId=current_creator).all()
-        return render_template("creatorAccount.html", total_songs= total_songs, average_rating= average_rating, total_albums= total_albums, creator= user.username, albums=albums, user = user, need = True)
+        return render_template("creatorAccount.html", total_songs= total_songs, average_rating= round(average_rating, 2), total_albums= total_albums, creator= user.username, albums=albums, user = user, need = True)
     albumTitle = request.form.get('albumTitle')
     artistName = request.form.get('artistName')
     album = Album(name=albumTitle, artist = artistName, CreatorId = current_creator) # genre=albumGenre
@@ -183,9 +210,10 @@ def creatorAccount():
     db.session.commit()
     flash("Album added Succesfully", "success")
     return redirect(url_for("creatorAccount"))
-      
+
 @app.route("/creatorAccount/<int:album_id>/update", methods = ["POST","GET"])
 @auth_required
+@creator_auth_required
 def updateAlbum(album_id):
     user = User.query.get(session["user_id"])
     album = db.session.query(Album).filter_by(id = album_id).one()
@@ -199,6 +227,7 @@ def updateAlbum(album_id):
 
 @app.route("/creatorAccount/<int:album_id>/delete")
 @auth_required
+@creator_auth_required
 def deleteAlbum(album_id):
     songs_in_album = db.session.query(Songs).filter_by(album_id=album_id).first()
     if songs_in_album:
@@ -217,6 +246,7 @@ def deleteAlbum(album_id):
 
 @app.route("/creatorAccount/<int:album_id>/addSongs", methods = ["GET", "POST"])
 @auth_required
+@creator_auth_required
 def addSongs(album_id):
     user = User.query.get(session["user_id"])
     current_creator = user.id
@@ -226,7 +256,7 @@ def addSongs(album_id):
         average_rating = db.session.query(func.avg(Songs.rating)).filter(Songs.CreatorId == current_creator).scalar()
         total_albums = db.session.query(func.count(Album.id)).filter(Album.CreatorId == current_creator).scalar()
         songs = Songs.query.filter_by(album_id=album_id).all()
-        return render_template("addSongs.html", total_songs= total_songs, average_rating= average_rating, total_albums= total_albums, creator= user.username, songs=songs, user = user, need = True, album_id = album_id)
+        return render_template("addSongs.html", total_songs= total_songs, average_rating= round(average_rating, 2), total_albums= total_albums, creator= user.username, songs=songs, user = user, need = True, album_id = album_id)
     SongTitle = request.form.get('SongTitle')
     SingerName = request.form.get('SingerName')
     Genre = request.form.get('Genre')
@@ -235,7 +265,12 @@ def addSongs(album_id):
     if file:
       filename = file.filename
       file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    new_song = Songs(name = SongTitle, artist = SingerName, lyrics = lyrics, genre = Genre, filename = filename, album_id = album_id, CreatorId =  current_creator)
+    image_file = request.files['imageFile']
+    if image_file:
+        image_filename = image_file.filename
+        print(image_filename)
+        image_file.save(os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], image_filename))
+    new_song = Songs(name = SongTitle, artist = SingerName, lyrics = lyrics, genre = Genre, filename = filename, imagepath= image_filename, album_id = album_id, CreatorId =  current_creator)
     db.session.add(new_song)
     db.session.commit()
     flash("Song added Succesfully", "success")
@@ -243,6 +278,7 @@ def addSongs(album_id):
 
 @app.route("/creatorAccount/<int:album_id>/addSongs/<int:song_id>/update", methods= ["GET", "POST"])
 @auth_required
+@creator_auth_required
 def updateSong(album_id, song_id):
     user = User.query.get(session["user_id"])
     song = db.session.query(Songs).filter_by(id = song_id).one()
@@ -255,6 +291,7 @@ def updateSong(album_id, song_id):
 
 @app.route("/creatorAccount/<int:album_id>/addSongs/<int:song_id>/delete")
 @auth_required
+@creator_auth_required
 def deleteSong(album_id, song_id):
     remove_song = db.session.query(Songs).filter_by(id=song_id).first()
     filename = remove_song.filename
@@ -266,8 +303,17 @@ def deleteSong(album_id, song_id):
     db.session.commit()
     return redirect(url_for("addSongs", album_id = album_id))
 
+@app.route("/creatorAccount/<int:album_id>/addSongs/<int:song_id>/viewlyrics")
+@auth_required
+@creator_auth_required
+def viewLyrics(album_id, song_id):
+    song = db.session.query(Songs).filter_by(id = song_id).one()
+    return render_template("lyrics.html", song=song)
+
+
 @app.route('/adminHome/manageCreators')
 @auth_required
+@admin_auth_required
 def manageCreators():
     creators = User.query.filter_by(role="creator").all()
     creators_data = (
@@ -284,6 +330,7 @@ def manageCreators():
 
 @app.route("/adminHome/manageCreators/<int:creatorID>/<string:newStatus>")
 @auth_required
+@admin_auth_required
 def updateStatus(creatorID, newStatus):
     creator = db.session.query(User).filter_by(id = creatorID).one()
     creator.status = newStatus
@@ -292,16 +339,17 @@ def updateStatus(creatorID, newStatus):
 
 @app.route('/adminHome/manageSongs')
 @auth_required
+@admin_auth_required
 def manageSongs():
     songs = db.session.query(Songs).all()
     return render_template("manageSongs.html", songs = songs, user = User.query.get(session["user_id"]), need = True)
 
 @app.route('/adminHome/manageSongs/<string:action>/<int:song_id>')
 @auth_required
+@admin_auth_required
 def adminManageSongs(song_id, action):
     song = db.session.query(Songs).filter_by(id = song_id).one()
     if action == "lyrics":
-        print(song.lyrics)
         return render_template("lyrics.html", song=song)
     elif action == "flag":
         filename = song.filename
@@ -317,11 +365,58 @@ def adminManageSongs(song_id, action):
 @auth_required
 def playSong(song_id):
     song = db.session.query(Songs).filter_by(id = song_id).one()
-    filename = song.filename
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    return render_template("playSong.html", song = song, user = User.query.get(session['user_id']), path = file_path)
+    return render_template("playSong.html", song = song, user = User.query.get(session['user_id']))
+
+@app.route('/submit-rating/<int:song_id>', methods=['POST'])
+@auth_required
+def submit_rating(song_id):
+    user_rating = int(request.form.get('rating'))
+    song = db.session.query(Songs).filter_by(id = song_id).one()
+    prev_rating = song.rating
+    if prev_rating != 0:
+        song.rating = (prev_rating + user_rating)/2
+    else:
+        song.rating = user_rating
+    db.session.commit()
+    flash("Thankyou ! Your rating have been submitted successfully", "success")
+    return redirect(url_for("playSong", song_id = song_id))
+
+@app.route('/createPlaylist')
+@auth_required
+def createPlaylist():
+    songs = Songs.query.all()
+    return render_template("createPlaylist.html", songs = songs, user = User.query.get(session["user_id"]))
+
+@app.route('/submit-playlist', methods = ["POST"])
+@auth_required
+def submit_playlist():
+    user = User.query.get(session["user_id"])
+    playlist_name = request.form.get('playlistName')
+    selected_songs = request.form.getlist('selectedSongs')
+
+    new_playlist = Playlist(owner=user.id, playlist_name=playlist_name)
+    
+    for song_id in selected_songs:
+        song = Songs.query.get(song_id)
+        if song:
+            new_playlist.songs.append(song)
+    db.session.add(new_playlist)
+    db.session.commit()
+
+    flash('Playlist created successfully!', 'success')
+    return redirect(url_for('home'))
 
 @app.route('/playlist')
 @auth_required
 def playlist():
-    return "Welcome to my Music Application"
+    user = User.query.get(session["user_id"])
+    user_id = user.id 
+    playlists = db.session.query(Playlist).filter_by(owner = user_id).all()
+    selected_playlist_id = request.args.get('playlist_id')
+    selected_playlist = next((playlist for playlist in playlists if str(playlist.id) == selected_playlist_id), playlists[0])
+    return render_template("playlist.html", user = user, playlists = playlists, selected_playlist=selected_playlist)
+
+@app.route('/playlist/<int:playlist_id>')
+@auth_required
+def gotoPlaylist(playlist_id):
+    return playlist_id

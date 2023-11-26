@@ -43,7 +43,7 @@
   <div class="container mt-5">
     <div class="row mt-4">
       <div class="col-md-6">
-        <h3>Add Song</h3>
+        <h3>Add a new Song</h3>
         <form method="POST" enctype="multipart/form-data">
           <div class="form-group">
             <label for="SongTitle">Song Title:</label>
@@ -54,6 +54,7 @@
             <label for="SingerName">Singer Name:</label>
             <input type="text" class="form-control" id="SingerName" name="SingerName" required>
           </div>
+          <br>
           <div class="form-group">
             <label for="Genre">Genre:</label>
             <input type="text" class="form-control" id="Genre" name="Genre" required>
@@ -67,8 +68,13 @@
           <div class="form-group">
             <label for="mp3File">Upload song:</label>
             <input type="file" class="form-control-file" id="mp3File" name="mp3File" accept=".mp3" required>
-        </div>
-        <br>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="imageFile">Upload Image/Poster:</label>
+            <input type="file" class="form-control-file" id="imageFile" name="imageFile" accept=".jpg, .jpeg, .png" required>
+          </div>
+          <br>
           <button type="submit" class="btn btn-primary">Add Song</button>
         </form>
       </div>
@@ -95,6 +101,7 @@
               <td>
                 <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/update">Update</a></button>
                 <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/delete">Delete</a></button>
+                <button type="submit" class="btn btn-info btn-sm"><i class="fas"></i><a href="/creatorAccount/{{album_id}}/addSongs/{{song.id}}/viewlyrics">Lyrics</a></button>
               </td>
             </tr>
             {% endfor %}
@@ -117,5 +124,8 @@
             min-height: 10em; 
             resize: none; 
         }
+  .table{
+    width: 110%;
+  }
 </style>
 {% endblock %}

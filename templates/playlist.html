@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Musicly- Playlists
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>My Playlists</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="user-info">
+                <img src="../static/images/ele.png" class="img-fluid rounded-circle mb-3" alt="Music Icon">
+                <h2>{{ user.name }}</h2>
+                <p>@{{ user.username }}</p>
+                <p class="pt">Select Playlist</p>
+                <select class="form-control" id="playlistDropdown" onchange="changePlaylist(this)">
+                    {% for playlist in playlists %}
+                        <option value="{{ playlist.id }}" {% if playlist.id == selected_playlist.id %}selected{% endif %}>{{ playlist.playlist_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+<div class="col-md-8 mt">
+    <table class="table playlist-table">
+        <thead>
+            <tr>
+                <th>Song Name</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Ratings</th>
+                <th>Play Song</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if selected_playlist %}
+                {% for song in selected_playlist.songs %}
+                    <tr>
+                        <td>{{ song.name }}</td>
+                        <td>{{ song.artist }}</td>
+                        <td>{{ song.genre }}</td>
+                        <td>{{ song.rating }}</td>
+                        <td>
+                            <audio controls>
+                                <source src="{{ url_for('static', filename='audios/' + song.filename) }}" type="audio/mpeg">
+                                Your browser does not support the audio tag.
+                            </audio>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3">No playlist selected.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<script>
+    function changePlaylist(dropdown) {
+        window.location.href = '/playlist?playlist_id=' + dropdown.value;
+    }
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+    img{
+        width: 200px;
+        height: 200px;
+    }
+    .mt {
+        margin-left: 60px;
+        width: 62%;
+    }
+    .pt{
+        margin-left: -250px;
+        margin-top: 25px;
+        margin-bottom: 2px;
+    }
+    .user-info {
+        border: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .content-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .playlist-table {
+        margin-top: 1px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: yellow; 
+    }
+</style>
+{% endblock %}

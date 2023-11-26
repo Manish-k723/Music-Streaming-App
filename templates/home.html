@@ -3,12 +3,12 @@
 {% block title %}
     Musicly-Home
 {% endblock %}
-
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 {% block content %}
 <div class="container mt-5">
     <h1 class="mm">Welcome to Musicly Application</h1>
     <div class="text-center">
-        <a href="#" class="btn btn-warning btn-lg">Create Playlist <span class="plus-sign">+</span></a>
+        <a href="/createPlaylist" class="btn btn-warning btn-lg"><span class="plus-sign">+</span> Create Playlist</a>
     </div>
     <div class="row mt-4">
         {% for song in songs %}
