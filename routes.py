@@ -43,6 +43,8 @@ def index():
         user = User.query.get(session["user_id"])
         if user:
             return redirect(url_for("home"))
+        else:
+            return redirect(url_for("login"))
     except:
         return redirect(url_for("login"))
 
@@ -235,6 +237,8 @@ def creatorAccount():
         average_rating = db.session.query(func.avg(Songs.rating)).filter(Songs.CreatorId == current_creator).scalar()
         total_albums = db.session.query(func.count(Album.id)).filter(Album.CreatorId == current_creator).scalar()
         albums = Album.query.filter_by(CreatorId=current_creator).all()
+        if average_rating is None:
+            average_rating = 0
         return render_template("creatorAccount.html", total_songs= total_songs, average_rating= round(average_rating, 2), total_albums= total_albums, creator= user.username, albums=albums, user = user, need = True)
     albumTitle = request.form.get('albumTitle')
     artistName = request.form.get('artistName')
@@ -289,6 +293,8 @@ def addSongs(album_id):
         average_rating = db.session.query(func.avg(Songs.rating)).filter(Songs.CreatorId == current_creator).scalar()
         total_albums = db.session.query(func.count(Album.id)).filter(Album.CreatorId == current_creator).scalar()
         songs = Songs.query.filter_by(album_id=album_id).all()
+        if average_rating is None:
+            average_rating = 0
         return render_template("addSongs.html", total_songs= total_songs, average_rating= round(average_rating, 2), total_albums= total_albums, creator= user.username, songs=songs, user = user, need = True, album_id = album_id)
     SongTitle = request.form.get('SongTitle')
     SingerName = request.form.get('SingerName')
