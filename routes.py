@@ -421,7 +421,7 @@ def submit_rating(song_id):
     song = db.session.query(Songs).filter_by(id = song_id).one()
     prev_rating = song.rating
     if prev_rating != 0:
-        song.rating = (prev_rating + user_rating)/2
+        song.rating = round((prev_rating + user_rating)/2, 2)
     else:
         song.rating = user_rating
     db.session.commit()
@@ -456,9 +456,13 @@ def submit_playlist():
 @app.route('/playlist')
 @auth_required
 def playlist():
-    user = User.query.get(session["user_id"])
-    user_id = user.id 
-    playlists = db.session.query(Playlist).filter_by(owner = user_id).all()
-    selected_playlist_id = request.args.get('playlist_id')
-    selected_playlist = next((playlist for playlist in playlists if str(playlist.id) == selected_playlist_id), playlists[0])
-    return render_template("playlist.html", user = user, playlists = playlists, selected_playlist=selected_playlist)
+    try:
+        user = User.query.get(session["user_id"])
+        user_id = user.id 
+        playlists = db.session.query(Playlist).filter_by(owner = user_id).all()
+        selected_playlist_id = request.args.get('playlist_id')
+        selected_playlist = next((playlist for playlist in playlists if str(playlist.id) == selected_playlist_id), playlists[0])
+        return render_template("playlist.html", user = user, playlists = playlists, selected_playlist=selected_playlist)
+    except:
+        flash("You haven't created any playlist, Create to continue", "danger")
+        return redirect(url_for("createPlaylist"))

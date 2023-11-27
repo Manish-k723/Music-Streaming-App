@@ -19,9 +19,11 @@
                         <option value="{{ playlist.id }}" {% if playlist.id == selected_playlist.id %}selected{% endif %}>{{ playlist.playlist_name }}</option>
                     {% endfor %}
                 </select>
+                <a href="/createPlaylist" class="btn btn-warning btn-sm bttn"><span class="plus-sign">+</span> Create New Playlist</a>
             </div>
         </div>
 <div class="col-md-8 mt">
+    <h1>Selected Playlist: <span style="color: #ffc107;">{{ selected_playlist.playlist_name }}</span></h1>
     <table class="table playlist-table">
         <thead>
             <tr>
@@ -72,6 +74,10 @@
     .mt {
         margin-left: 60px;
         width: 62%;
+        margin-top: -56px;
+    }
+    .bttn{
+        margin-top: 10px;
     }
     .pt{
         margin-left: -250px;
