@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="song-info p-3">
-                    <img src="../static/images/dog.jpg" alt="Song Image" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    <img src="../static/icons/dog.jpg" alt="Song Image" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
                     <h1>{{song.name}}</h1>
                     <p>Artist: {{song.artist}}</p>
                     <p>Rating: {{song.rating}}</p>
@@ -19,7 +19,7 @@
                         Your browser does not support the audio tag.
                     </audio>
                     <div class="container">
-                        <form action="/submit-rating/{{song.id}}" method="post">
+                        <form action="/submit-rating/{{song.id}}" method="post" style="padding-right: 66px;">
                             <div class="rating">
                                 <input type="radio" id="star5" name="rating" value="5">
                                 <label for="star5"></label>

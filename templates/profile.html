@@ -4,7 +4,7 @@ Musicly-Home
 {% endblock %} 
 {% block content %}
     <h1>Profile
-        <small class="text-muted">@{{user.username}}</small>
+        <small class="text dec">@{{user.username}}</small>
     </h1>
     
     <hr>
@@ -45,7 +45,9 @@ Musicly-Home
 
 {% block style %}
 <style>
-    
+    .dec{
+        color: yellow;
+    }
     form{
         display:flex;
         flex-direction: column;

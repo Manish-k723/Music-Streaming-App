@@ -124,9 +124,42 @@ def home():
         flash("You are an admin, continue as admin", "info")
         return redirect(url_for('admin'))
     else:
-        songs = Songs.query.order_by(Songs.rating.desc()).all()
-        return render_template('home.html', songs = songs, user = User.query.get(session["user_id"]))
-    
+        param = request.args.get('parameter')
+        query = request.args.get('query')
+        parameters = {
+            'name': "Song Title",
+            'artist': "Artist",
+            'album': "Album",
+            'genre':"Genre",
+            'rating':"Rating"
+        }
+        if not param or not query:
+            songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).order_by(Songs.rating.desc()).all()
+            return render_template('home.html', songs_and_albums = songs_albums, user = User.query.get(session["user_id"]),query = "", parameters = parameters, param = param, res = False)
+
+        elif param == "album":
+            album = Album.query.filter(Album.name.ilike('%' + query + '%')).one()
+            songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).filter(Album.name == album.name).all()
+
+        elif param=="name":
+            songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).filter(Songs.name.ilike('%' + query + '%')).order_by(Songs.rating.desc()).all()
+            print("Hello",songs_albums)
+
+        elif param=="genre":
+            songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).filter(Songs.genre.ilike('%' + query + '%')).order_by(Songs.rating.desc()).all()
+
+        elif param=="artist":
+            songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).filter(Songs.artist.ilike('%' + query + '%')).order_by(Songs.rating.desc()).all()
+
+        elif param=="rating":
+            try:
+                rating = float(query)
+                songs_albums = db.session.query(Songs, Album.name, User.status).join(Album, Songs.album_id == Album.id).join(User, Songs.CreatorId == User.id).filter(Songs.rating >= int(rating), Songs.rating < int(rating) + 1).order_by(Songs.rating.desc()).all()
+            except ValueError:
+                flash("Invalid rating input. Please enter a valid numeric rating.", "danger")
+                return redirect(url_for("home"))
+        return render_template('home.html', songs_and_albums = songs_albums, user = User.query.get(session["user_id"]), query = query, parameters = parameters, param = param, res = True)
+
 @app.route('/adminHome')
 @auth_required
 @admin_auth_required
@@ -298,6 +331,10 @@ def deleteSong(album_id, song_id):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     if os.path.exists(file_path):
         os.remove(file_path)
+    img = remove_song.imagepath
+    img_path = os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], img)
+    if os.path.exists(img_path):
+        os.remove(img_path)
     db.session.delete(remove_song)
     flash("Song deleted Successfully", "success")
     db.session.commit()
@@ -356,6 +393,10 @@ def adminManageSongs(song_id, action):
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             os.remove(file_path)
+        img = song.imagepath
+        img_path = os.path.join(app.config['IMAGE_UPLOAD_FOLDER'], img)
+        if os.path.exists(img_path):
+            os.remove(img_path)
         db.session.delete(song)
         db.session.commit()
         flash("Song removed", "success")
@@ -415,8 +456,3 @@ def playlist():
     selected_playlist_id = request.args.get('playlist_id')
     selected_playlist = next((playlist for playlist in playlists if str(playlist.id) == selected_playlist_id), playlists[0])
     return render_template("playlist.html", user = user, playlists = playlists, selected_playlist=selected_playlist)
-
-@app.route('/playlist/<int:playlist_id>')
-@auth_required
-def gotoPlaylist(playlist_id):
-    return playlist_id

@@ -5,26 +5,49 @@
 {% endblock %}
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 {% block content %}
+{% include 'searchBar.html' with context %}
 <div class="container mt-5">
     <h1 class="mm">Welcome to Musicly Application</h1>
     <div class="text-center">
         <a href="/createPlaylist" class="btn btn-warning btn-lg"><span class="plus-sign">+</span> Create Playlist</a>
     </div>
+    {% if res %}
+        <h2>Search results !!!</h2>
+    {% endif %}
     <div class="row mt-4">
-        {% for song in songs %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ song.name }}</h5>
-                        <p class="card-text">Artist: {{ song.artist }}</p>
-                        <p class="card-text">Rating: {{ song.rating }}</p>
-                        <p class="card-text">Genre: {{ song.genre }}</p>
-                        <a href="playSong/{{song.id}}" class="btn btn-info">Listen</a>
+        {% for song, album, creator_status in songs_and_albums %}
+            {% if creator_status=="white" %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <!-- Left Part: Song Details -->
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ song.name }}</h5>
+                                    <p class="card-text">Artist: {{ song.artist }}</p>
+                                    <p class="card-text">Album: {{ album }}</p>
+                                    <p class="card-text">Rating: {{ song.rating }}</p>
+                                    <p class="card-text">Genre: {{ song.genre }}</p>
+                                    <a href="playSong/{{ song.id }}" class="btn btn-info">Listen</a>
+                                </div>
+                            </div>
+                            <!-- Right Part: Song Poster -->
+                            {% if song.imagepath %}
+                                <div class="col-md-5">
+                                    <img src="{{ url_for('static', filename= 'images/' + song.imagepath) }}" alt="Song Poster" class="card-img rimage">
+                                </div>
+                            {% else %}
+                                <div class="col-md-5">
+                                    <img src="../static/icons/music.png" alt="Song Poster" class="card-img bimage">
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% endif %}
         {% endfor %}
     </div>
+    
 </div>
 {% endblock %}
 
@@ -33,6 +56,16 @@
     .mm{
         text-align: center;
         margin: 17px;
+    }
+    .rimage{
+        padding-right: 10px;
+        height: 200px;
+        margin-top: 13px;
+    }
+    .bimage{
+        padding-right: 10px;
+        height: 170px;
+        margin-top: 26px;
     }
 </style>
 {% endblock %}
