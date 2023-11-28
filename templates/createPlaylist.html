@@ -10,7 +10,7 @@
         <form action="/submit-playlist" method="post">
             <div class="form-group pn">
                 <label for="playlistName" class="mr-2">Playlist Name:</label>
-                <input type="text" id="playlistName" name="playlistName" required>
+                <input type="text" id="playlistName" name="playlistName" class="sub" required>
             </div>            
             <table class="table">
                 <thead>
@@ -43,6 +43,10 @@
 <style>
     .pn{
         margin-bottom: 8px;
+    }
+    .sub{
+        border-radius: 5px;
+        padding: 3px 0px 0px 8px;
     }
 </style>
 {% endblock %}

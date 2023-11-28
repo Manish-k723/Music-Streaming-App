@@ -4,9 +4,10 @@
     Musicly-Manage Songs
 {% endblock %} 
 
-{% block content %} 
+{% block content %}
+<body>
 <div class="container mt-5">
-    <h2>Song Management</h2>
+    <h2><strong>Song Management</strong></h2>
   
     <table class="table mt-4">
       <thead>
@@ -43,9 +44,12 @@
 
 {% block style %}
 <style>
-a{
-  text-decoration: none;
-  color: white;
-}
+  a{
+    text-decoration: none;
+    color: white;
+  }
+  body{
+          background: center/cover no-repeat url('../static/icons/bg7.jpg');
+      }
 </style>
 {% endblock %}

@@ -3,6 +3,7 @@
     Musicly- Admin Dashboard
 {% endblock title %}
 {% block content %}
+<body>
 <div class="card-group cd">
     <div class="card border-info cdg">
       <div class="card-body">
@@ -51,6 +52,7 @@
       </div>
     </div>
   </div>
+</body>
 {% endblock content %}
 
 {% block style %}
@@ -62,6 +64,9 @@
         .cdg{
             padding: 15px;
         }
+        body{
+          background: center/cover no-repeat url('../static/icons/bg7.jpg');
+          }
         .heading{
             display: flex;
             justify-content: space-between;
