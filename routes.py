@@ -181,17 +181,18 @@ def adminHome():
 def profile():
     if request.method == "GET":
         return render_template("profile.html", user = User.query.get(session["user_id"]))
+    user = User.query.get(session["user_id"])
     username =request.form.get("username")
     name = request.form.get("name")
     email = request.form.get("email")
     password = request.form.get("password")
-    cpassword = request.form.get("cpassword")
-    if username =="" or password =="" or cpassword=="":
+    # cpassword = request.form.get("cpassword")
+    if username =="" or password =="":
         flash("Username or Password cannot be empty.", "danger")
         return redirect(url_for('profile'))
-    if not check_password(cpassword):
-        flash("Incorrect Password, Try again.", "danger")
-        return redirect(url_for('profile'))
+    # if not check_password(cpassword):
+    #     flash("Incorrect Password, Try again.", "danger")
+    #     return redirect(url_for('profile'))
     if len(password)<7:
         flash("Password Strength is low", "danger")
         return redirect(url_for('profile'))
