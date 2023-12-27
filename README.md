@@ -52,6 +52,10 @@ flask run
 
 ### Visit http://127.0.0.1:5000 in your browser.
 
+You will be redirected to this page:
+![image](https://github.com/Manish-k723/Music-Streaming-App/assets/109733755/13aa595f-e785-4447-aee9-45a847587e8e)
+
+You can also go to this demo video: [Demo Video](https://drive.google.com/file/d/1Z3nZIRoC_2T2CPBpdPCfcCtdT5hLzgPs/view?usp=sharing)
 ## License
 
 Feel free to add or modify sections based on the specifics of your project. Make sure to include details that would help users, developers, and contributors understand how to use and contribute to your project.
