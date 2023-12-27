@@ -2,7 +2,3 @@
 venv/
 .env
 __pycache__/
-trial.py
-initial.html
-audios
-images
